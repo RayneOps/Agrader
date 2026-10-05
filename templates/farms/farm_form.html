@@ -1,0 +1,31 @@
+{% extends "core/form.html" %}
+{% block scripts %}
+<script>
+  // Fill latitude and longitude from the phone's GPS.
+  (function () {
+    var lat = document.getElementById("id_latitude");
+    var lng = document.getElementById("id_longitude");
+    if (!lat || !lng || !navigator.geolocation) return;
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn btn-accent btn-block";
+    button.textContent = "Use my current location";
+    var status = document.createElement("p");
+    status.className = "muted small";
+    status.setAttribute("aria-live", "polite");
+    lat.closest(".field").before(button, status);
+    button.addEventListener("click", function () {
+      status.textContent = "Getting location…";
+      navigator.geolocation.getCurrentPosition(
+        function (pos) {
+          lat.value = pos.coords.latitude.toFixed(6);
+          lng.value = pos.coords.longitude.toFixed(6);
+          status.textContent = "Location set (accurate to about " + Math.round(pos.coords.accuracy) + " m).";
+        },
+        function (err) { status.textContent = "Could not get location: " + err.message + ". Type it in instead."; },
+        { enableHighAccuracy: true, timeout: 20000 }
+      );
+    });
+  })();
+</script>
+{% endblock %}

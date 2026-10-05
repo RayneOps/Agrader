@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ crop.name }}{% endblock %}
+{% block content %}
+{% include "crops/_header.html" %}
+
+<div class="page-head">
+  <h2>{{ crop.name }}</h2>
+  <div class="actions">
+    <a class="btn" href="{% url 'crop_edit' crop.pk %}">Edit details</a>
+    <a class="btn btn-primary" href="{% url 'requirement_new' crop.pk %}">New version</a>
+  </div>
+</div>
+
+<section class="card">
+  <dl class="facts">
+    <div><dt>Also called</dt><dd>{{ crop.also_called|default:"–" }}</dd></div>
+    <div><dt>Scientific name</dt><dd><em>{{ crop.scientific_name|default:"–" }}</em></dd></div>
+    <div><dt>Family</dt><dd>{{ crop.get_family_display }}</dd></div>
+    <div><dt>Fixes nitrogen</dt><dd>{{ crop.fixes_nitrogen|yesno:"Yes,No" }}</dd></div>
+    <div><dt>Used by the engine</dt><dd>{% if in_use %}v{{ in_use.version }}{% if not in_use.approved %} (draft){% endif %}{% else %}<strong class="text-warn">No approved version, so this crop cannot be recommended</strong>{% endif %}</dd></div>
+  </dl>
+</section>
+
+<h2>Requirement versions</h2>
+{% for v in versions %}
+<section class="card version{% if v == latest %} version-latest{% endif %}">
+  <div class="page-head">
+    <h3>Version {{ v.version }}{% if v == latest %} <span class="muted small">(latest)</span>{% endif %}</h3>
+    {% url 'requirement_approve' v.pk as approve_url %}
+    {% include "crops/_approval.html" with item=v action_url=approve_url verb="Approve" is_approved=v.approved by=v.approved_by at=v.approved_at %}
+  </div>
+  <p class="muted small">Created {{ v.created_at|date:"j M Y, H:i" }} by {{ v.created_by|default:"seed data" }}</p>
+  <dl class="facts facts-compact">
+    <div><dt>pH (min · ideal · max)</dt><dd>{{ v.ph_min }} · {{ v.ph_ideal_low }}–{{ v.ph_ideal_high }} · {{ v.ph_max }}</dd></div>
+    <div><dt>Demand N / P / K</dt><dd>{{ v.get_n_demand_display }} / {{ v.get_p_demand_display }} / {{ v.get_k_demand_display }}</dd></div>
+    <div><dt>Water need</dt><dd>{{ v.water_low_mm }}–{{ v.water_high_mm }} mm</dd></div>
+    <div><dt>Days to maturity</dt><dd>{{ v.days_min }}–{{ v.days_max }}</dd></div>
+    <div><dt>Temperature</dt><dd>{{ v.temp_low_c }}–{{ v.temp_high_c }} °C</dd></div>
+    <div><dt>Planting window</dt><dd>{{ v.planting_window|default:"–" }}</dd></div>
+    <div><dt>Needs standing water</dt><dd>{{ v.requires_standing_water|yesno:"Yes,No" }}</dd></div>
+    <div><dt>Exempt from season length</dt><dd>{{ v.exempt_from_season_length|yesno:"Yes,No" }}</dd></div>
+  </dl>
+  {% if v.notes %}<p class="small">{{ v.notes|linebreaksbr }}</p>{% endif %}
+</section>
+{% empty %}
+<div class="card"><p class="muted">No requirements recorded yet.</p></div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "core/form.html" %}
+{% block before_form %}
+{% if duplicates %}
+<div class="msg msg-warning" role="alert">
+  <p>A farmer with this name already exists in {{ form.cleaned_data.village }}. Check that this is not the same person:</p>
+  <ul>
+    {% for farmer in duplicates %}
+    <li><a href="{{ farmer.get_absolute_url }}" target="_blank" rel="noopener">{{ farmer.name }}</a>, {{ farmer.village }}{% if farmer.phone %}, {{ farmer.phone }}{% endif %} (added {{ farmer.created_at|date:"j M Y" }})</li>
+    {% endfor %}
+  </ul>
+  <p>If this is a different person, save anyway.</p>
+</div>
+{% endif %}
+{% endblock %}
+{% block actions %}
+{% if duplicates %}
+  <button type="submit" name="confirm_duplicate" value="1" class="btn btn-accent">Save anyway</button>
+{% else %}
+  <button type="submit" class="btn btn-primary">{{ submit }}</button>
+{% endif %}
+{% endblock %}

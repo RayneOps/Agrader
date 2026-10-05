@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Farmers{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Farmers</h1>
+  <a class="btn btn-primary" href="{% url 'farmer_create' %}">Add farmer</a>
+</div>
+
+<form method="get" class="search" role="search">
+  <label for="q" class="visually-hidden">Search farmers</label>
+  <input type="search" id="q" name="q" value="{{ query }}" placeholder="Name, phone or village">
+  <button type="submit" class="btn">Search</button>
+</form>
+{% if query %}<p class="muted">{{ page.paginator.count }} result{{ page.paginator.count|pluralize }} for “{{ query }}”. <a href="{% url 'farmer_list' %}">Clear</a></p>{% endif %}
+
+{% if page.object_list %}
+<ul class="row-list">
+  {% for farmer in page.object_list %}
+  <li>
+    <a class="row-link" href="{{ farmer.get_absolute_url }}">
+      <span class="row-title">{{ farmer.name }}</span>
+      <span class="row-meta">
+        <span><span class="muted">Village</span> {{ farmer.village }}</span>
+        <span><span class="muted">Farms</span> {{ farmer.farm_count }}</span>
+        <span><span class="muted">Last visit</span> {{ farmer.last_visit|date:"j M Y"|default:"None yet" }}</span>
+      </span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% include "core/_pagination.html" %}
+{% else %}
+<div class="card"><p class="muted">{% if query %}No farmers match that search.{% else %}No farmers yet. Add the first one.{% endif %}</p></div>
+{% endif %}
+{% endblock %}

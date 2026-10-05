@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<section class="card login-card">
+  <h1 class="login-brand">{{ PRODUCT_NAME }}</h1>
+  <p class="muted">Team sign in</p>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="msg msg-error" role="alert">Email or password is not correct. Try again.</div>
+    {% endif %}
+    <div class="field">
+      <label for="{{ form.username.id_for_label }}">Email</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+    </div>
+    <div class="field">
+      <label for="{{ form.password.id_for_label }}">Password</label>
+      {{ form.password }}
+      {{ form.password.errors }}
+    </div>
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+  </form>
+  <p class="muted small">Forgot your password? Ask another admin to set a new one.</p>
+</section>
+{% endblock %}

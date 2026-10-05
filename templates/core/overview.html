@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<h1>Overview</h1>
+
+<section class="card">
+  <h2>Recent activity</h2>
+  {% include "core/_audit_list.html" with entries=latest_audit %}
+</section>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Rotation rules{% endblock %}
+{% block content %}
+{% include "crops/_header.html" %}
+
+<div class="page-head">
+  <p class="muted small">Rules compare a crop with the crops grown in the season just before on the same farm.</p>
+  <a class="btn btn-primary" href="{% url 'rotation_new' %}">New rotation rule</a>
+</div>
+
+<ul class="row-list">
+  {% for rule in rules %}
+  <li class="rule-row">
+    <div>
+      <strong>{{ rule.code }}</strong> {{ rule.previous_label }} → {{ rule.next_label }}
+      <span class="tag tag-effect-{{ rule.effect }}">{{ rule.get_effect_display }}</span>
+      <div class="small">{{ rule.reason }}</div>
+    </div>
+    <div class="rule-actions">
+      {% url 'rotation_approve' rule.pk as approve_url %}
+      {% include "crops/_approval.html" with item=rule action_url=approve_url verb="Approve" is_approved=rule.approved by=rule.approved_by at=rule.approved_at %}
+      <a href="{% url 'rotation_edit' rule.pk %}">Edit</a>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

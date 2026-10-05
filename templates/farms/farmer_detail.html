@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ farmer.name }}{% endblock %}
+{% block content %}
+<p class="crumbs"><a href="{% url 'farmer_list' %}">Farmers</a></p>
+<div class="page-head">
+  <h1>{{ farmer.name }}</h1>
+  <a class="btn" href="{% url 'farmer_edit' farmer.pk %}">Edit</a>
+</div>
+
+<section class="card">
+  <dl class="facts">
+    <div><dt>Member since</dt><dd>{{ farmer.member_since|date:"j M Y" }}</dd></div>
+    <div><dt>Phone</dt><dd>{% if farmer.phone %}<a href="tel:{{ farmer.phone|cut:' ' }}">{{ farmer.phone }}</a>{% else %}<span class="muted">Not recorded</span>{% endif %}</dd></div>
+    <div><dt>Language</dt><dd>{{ farmer.get_language_display }}</dd></div>
+    <div><dt>Village</dt><dd>{{ farmer.village }}</dd></div>
+    <div><dt>Farms</dt><dd>{{ farms|length }}</dd></div>
+  </dl>
+</section>
+
+<div class="page-head">
+  <h2>Farms</h2>
+  <a class="btn btn-primary" href="{% url 'farm_create' farmer.pk %}">Add farm</a>
+</div>
+{% if farms %}
+<ul class="row-list">
+  {% for farm in farms %}
+  <li>
+    <a class="row-link" href="{{ farm.get_absolute_url }}">
+      <span class="row-title">{{ farm.name }}</span>
+      <span class="row-meta">
+        <span>{{ farm.size_ha }} ha</span>
+        <span>{{ farm.get_water_source_display }}</span>
+        <span><span class="muted">Seasons</span> {{ farm.season_count }}</span>
+        <span><span class="muted">Last planted</span> {{ farm.last_season|date:"j M Y"|default:"None yet" }}</span>
+      </span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="card"><p class="muted">No farms yet.</p></div>
+{% endif %}
+{% endblock %}

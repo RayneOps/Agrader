@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Score settings{% endblock %}
+{% block content %}
+{% include "crops/_header.html" %}
+
+{% if not weights_ok %}
+<div class="msg msg-error" role="alert">The score weights add up to {{ weight_total|default:"an invalid total" }}, not 100. Fix them before recommendations are issued.</div>
+{% endif %}
+
+{% for label, rows in groups %}
+<h2>{{ label }}</h2>
+<ul class="row-list">
+  {% for item in rows %}
+  <li class="rule-row">
+    <div>
+      <strong>{{ item.key }}</strong> = <span class="setting-value">{{ item.value }}</span>
+      <div class="small muted">{{ item.description }}</div>
+    </div>
+    <div class="rule-actions">
+      {% url 'setting_verify' item.pk as verify_url %}
+      {% include "crops/_approval.html" with action_url=verify_url verb="Verify" is_approved=item.verified by=item.verified_by at=item.verified_at %}
+      <a href="{% url 'setting_edit' item.pk %}">Edit</a>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% endfor %}
+{% endblock %}

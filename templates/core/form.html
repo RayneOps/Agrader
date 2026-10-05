@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+{% block before_form %}{% endblock %}
+<form method="post" class="card" novalidate>
+  {% csrf_token %}
+  {% include "core/_form_fields.html" %}
+  <div class="actions">
+    {% block actions %}<button type="submit" class="btn btn-primary">{{ submit }}</button>{% endblock %}
+    <a class="btn" href="{% if cancel_url %}{{ cancel_url }}{% else %}{% url 'overview' %}{% endif %}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

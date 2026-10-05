@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Pair rules{% endblock %}
+{% block content %}
+{% include "crops/_header.html" %}
+
+<div class="page-head">
+  <form method="get" class="search">
+    <label for="crop" class="visually-hidden">Show pairs for crop</label>
+    <select name="crop" id="crop" onchange="this.form.submit()">
+      <option value="">All crops</option>
+      {% for crop in crops %}<option value="{{ crop.pk }}"{% if crop_id == crop.pk|stringformat:"s" %} selected{% endif %}>{{ crop.name }}</option>{% endfor %}
+    </select>
+    <noscript><button type="submit" class="btn">Show</button></noscript>
+  </form>
+  <a class="btn btn-primary" href="{% url 'pair_new' %}">New pair rule</a>
+</div>
+
+<ul class="row-list">
+  {% for pair in pairs %}
+  <li class="rule-row">
+    <div>
+      <strong>{{ pair.crop_a }} + {{ pair.crop_b }}</strong>
+      <span class="tag tag-verdict-{{ pair.verdict }}">{{ pair.get_verdict_display }}</span>
+      <div class="small">{% if pair.reason %}{{ pair.reason }}{% else %}<span class="muted">No reason recorded.</span>{% endif %}</div>
+    </div>
+    <div class="rule-actions">
+      {% url 'pair_approve' pair.pk as approve_url %}
+      {% include "crops/_approval.html" with item=pair action_url=approve_url verb="Approve" is_approved=pair.approved by=pair.approved_by at=pair.approved_at %}
+      <a href="{% url 'pair_edit' pair.pk %}">Edit</a>
+    </div>
+  </li>
+  {% empty %}
+  <li class="rule-row muted">No pair rules.</li>
+  {% endfor %}
+</ul>
+<p class="muted small">Pairs with no rule are allowed together in mixed cropping, without a bonus.</p>
+{% endblock %}

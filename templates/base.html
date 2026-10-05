@@ -1,0 +1,49 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1F5C3A">
+  <title>{% block title %}{% endblock %} · {{ PRODUCT_NAME }}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {% if user.is_authenticated %}
+  <header class="topbar">
+    <a class="brand" href="{% url 'overview' %}">{{ PRODUCT_NAME }}</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="main-nav">Menu</button>
+    <nav class="nav" id="main-nav">
+        <a href="{% url 'overview' %}"{% if nav_section == "core" %} aria-current="page"{% endif %}>Overview</a>
+        <a href="{% url 'farmer_list' %}"{% if nav_section == "farms" %} aria-current="page"{% endif %}>Farmers</a>
+        <a href="{% url 'crop_list' %}"{% if nav_section == "crops" %} aria-current="page"{% endif %}>Crop knowledge</a>
+        <form method="post" action="{% url 'logout' %}" class="nav-logout">
+          {% csrf_token %}
+          <button type="submit" class="link-button">Sign out ({{ user.full_name|default:user.email }})</button>
+        </form>
+    </nav>
+  </header>
+  {% endif %}
+
+  <main class="container">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}<li class="msg msg-{{ message.tags }}">{{ message }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <script>
+    (function () {
+      var toggle = document.querySelector(".menu-toggle");
+      if (!toggle) return;
+      toggle.addEventListener("click", function () {
+        var open = toggle.getAttribute("aria-expanded") !== "true";
+        toggle.setAttribute("aria-expanded", String(open));
+        document.getElementById("main-nav").classList.toggle("is-open", open);
+      });
+    })();
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

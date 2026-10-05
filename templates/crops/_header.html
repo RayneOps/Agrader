@@ -1,0 +1,23 @@
+<h1>Crop knowledge</h1>
+
+{% if not approver_exists %}
+<div class="msg msg-error" role="alert">
+  Nobody can approve rules yet. Set <code>RULE_APPROVER_EMAIL</code> to the Crop Scientist's admin account and run <code>manage.py seed_admins</code>.
+</div>
+{% endif %}
+{% if unverified_thresholds %}
+<div class="msg msg-warning" role="alert">
+  Nutrient thresholds are placeholders and not verified. The sensor's units and accuracy are not confirmed, so nutrient scores are not reliable yet.
+</div>
+{% endif %}
+{% if pending_count or unverified_settings %}
+<p class="muted">{{ pending_count }} rule{{ pending_count|pluralize }} awaiting approval · {{ unverified_settings }} setting{{ unverified_settings|pluralize }} not verified.
+{% if allow_unapproved %}<strong>ALLOW_UNAPPROVED_RULES is on:</strong> draft rules are used, and recommendations show a draft banner.{% else %}Only approved rules are used.{% endif %}</p>
+{% endif %}
+
+<nav class="tabs" aria-label="Crop knowledge sections">
+  <a href="{% url 'crop_list' %}"{% if tab == "crops" %} aria-current="page"{% endif %}>Crops</a>
+  <a href="{% url 'pair_list' %}"{% if tab == "pairs" %} aria-current="page"{% endif %}>Pair rules</a>
+  <a href="{% url 'rotation_list' %}"{% if tab == "rotation" %} aria-current="page"{% endif %}>Rotation rules</a>
+  <a href="{% url 'setting_list' %}"{% if tab == "settings" %} aria-current="page"{% endif %}>Score settings</a>
+</nav>

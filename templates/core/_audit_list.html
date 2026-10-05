@@ -1,0 +1,14 @@
+{% if entries %}
+<ul class="audit-list">
+  {% for entry in entries %}
+  <li>
+    <span class="tag tag-{{ entry.action }}">{{ entry.get_action_display }}</span>
+    <strong>{{ entry.model }}</strong> {{ entry.object_repr }}
+    {% if entry.changed_fields %}<span class="muted">({{ entry.changed_fields|join:", " }})</span>{% endif %}
+    <div class="muted small">{{ entry.actor|default:"System" }} · {{ entry.timestamp|date:"j M Y, H:i" }}</div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="muted">Nothing recorded yet.</p>
+{% endif %}

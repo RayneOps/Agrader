@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ farm.name }}{% endblock %}
+{% block content %}
+<p class="crumbs"><a href="{% url 'farmer_list' %}">Farmers</a> › <a href="{{ farm.farmer.get_absolute_url }}">{{ farm.farmer.name }}</a></p>
+<div class="page-head">
+  <h1>{{ farm.name }}</h1>
+  <a class="btn" href="{% url 'farm_edit' farm.pk %}">Edit</a>
+</div>
+
+<section class="card">
+  <dl class="facts">
+    <div><dt>Farmer</dt><dd><a href="{{ farm.farmer.get_absolute_url }}">{{ farm.farmer.name }}</a></dd></div>
+    <div><dt>Size</dt><dd>{{ farm.size_ha }} ha</dd></div>
+    <div><dt>Water source</dt><dd>{{ farm.get_water_source_display }}</dd></div>
+    <div><dt>GPS</dt><dd>
+      {% if farm.has_gps %}
+        {{ farm.latitude }}, {{ farm.longitude }}
+        <br><a href="https://www.openstreetmap.org/?mlat={{ farm.latitude }}&amp;mlon={{ farm.longitude }}#map=16/{{ farm.latitude }}/{{ farm.longitude }}" target="_blank" rel="noopener">Open map</a>
+      {% else %}<span class="muted">Not recorded</span>{% endif %}
+    </dd></div>
+  </dl>
+</section>
+
+<div class="page-head">
+  <h2>Seasonal Soil Memory</h2>
+  {# TODO(phase 4): Start new season button linking to the wizard. #}
+</div>
+{% if seasons %}
+<ol class="timeline">
+  {% for season in seasons %}
+  <li class="timeline-item">
+    <div class="timeline-head">
+      <strong>{{ season.get_label_display }} {{ season.year }}</strong>
+      <span class="tag tag-status-{{ season.status }}">{{ season.get_status_display }}</span>
+    </div>
+    <div class="muted">Planted {{ season.planting_date|date:"j M Y" }} · {{ season.get_cropping_method_display }}</div>
+  </li>
+  {% endfor %}
+</ol>
+{% else %}
+<div class="card"><p class="muted">No seasons recorded yet. This farm's history starts with its first season.</p></div>
+{% endif %}
+{% endblock %}

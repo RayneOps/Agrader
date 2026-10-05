@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Crop knowledge{% endblock %}
+{% block content %}
+{% include "crops/_header.html" %}
+
+<ul class="row-list">
+  {% for row in rows %}
+  <li>
+    <a class="row-link" href="{% url 'crop_detail' row.crop.pk %}">
+      <span class="row-title">{{ row.crop.name }}{% if not row.crop.active %} <span class="tag">Inactive</span>{% endif %}</span>
+      <span class="row-meta">
+        <span class="muted">{{ row.crop.also_called }}</span>
+        <span>{{ row.crop.get_family_display }}{% if row.crop.fixes_nitrogen %}, fixes nitrogen{% endif %}</span>
+      </span>
+      <span class="row-meta">
+        <span><span class="muted">Latest</span> v{{ row.latest.version|default:"–" }}</span>
+        <span><span class="muted">Approved</span> {% if row.approved %}v{{ row.approved.version }}{% else %}<strong class="text-warn">none</strong>{% endif %}</span>
+      </span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}
