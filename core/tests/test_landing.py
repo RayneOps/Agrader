@@ -29,7 +29,13 @@ class LandingPageTests(TestCase):
     def test_page_follows_the_writing_rules(self):
         html = self.client.get("/").content.decode()
         self.assertNotIn("—", html, "no em dashes")
-        self.assertNotIn("Team", html.replace("Team sign in", ""), "team section stays out until names are given")
+        self.assertNotIn("<img", html, "no images until they exist")
+
+    def test_team_section(self):
+        response = self.client.get("/")
+        for name, role in (("Ishak Ishak Opeyemi", "Founder"), ("Abubakar Usman Damilare", "Developer"),
+                           ("Samantha Umar", "Crop Scientist"), ("Apeh Peter", "AI")):
+            self.assertContains(response, f"<li><strong>{name}</strong><span>{role}</span></li>", html=True)
 
     @override_settings(PRODUCT_NAME="CropCycle")
     def test_product_name_from_settings(self):

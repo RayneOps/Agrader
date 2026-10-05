@@ -291,3 +291,7 @@ button[disabled] { opacity: .5; cursor: not-allowed; }
 .landing-footer { padding: 24px 0 40px; font-size: .95rem; }
 .landing-footer a { display: inline-flex; align-items: center; min-height: var(--tap); }
 @media (min-width: 700px) { .landing-hero h1 { font-size: 3rem; } }
+.landing-team { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.landing-team li { display: flex; flex-direction: column; padding: 10px 14px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+.landing-team span { color: var(--muted); font-size: .95rem; }
+@media (min-width: 600px) { .landing-team { grid-template-columns: 1fr 1fr; } }
