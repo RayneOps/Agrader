@@ -65,6 +65,8 @@ for _var in ("VERCEL_URL", "VERCEL_BRANCH_URL", "VERCEL_PROJECT_PRODUCTION_URL")
 
 # Product name shown everywhere in the UI. Never hardcode it in templates.
 PRODUCT_NAME = os.environ.get("PRODUCT_NAME", "AGRADER")
+# Email or phone shown on the public landing page. The Contact section is hidden when empty.
+PUBLIC_CONTACT = os.environ.get("PUBLIC_CONTACT", "").strip()
 
 INSTALLED_APPS = [
     "django.contrib.auth",

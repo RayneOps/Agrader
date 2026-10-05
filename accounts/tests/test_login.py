@@ -11,8 +11,8 @@ class LoginTests(TestCase):
         )
 
     def test_every_screen_requires_login(self):
-        response = self.client.get(reverse("overview"))
-        self.assertRedirects(response, reverse("login") + "?next=/")
+        response = self.client.get(reverse("farmer_list"))
+        self.assertRedirects(response, reverse("login") + "?next=/farmers")
 
     def test_login_page_is_public(self):
         self.assertEqual(self.client.get(reverse("login")).status_code, 200)

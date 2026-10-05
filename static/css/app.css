@@ -274,3 +274,20 @@ button[disabled] { opacity: .5; cursor: not-allowed; }
 .per-crop { margin-top: 8px; }
 .per-crop summary { cursor: pointer; font-weight: 700; color: var(--green); min-height: var(--tap); display: flex; align-items: center; }
 .per-crop h3 { margin: 8px 0 4px; }
+
+/* --- Public landing page --- */
+.landing { max-width: 680px; margin: 0 auto; }
+.landing-hero { padding: 32px 0 24px; border-bottom: 4px solid var(--ochre); margin-bottom: 8px; }
+.landing-hero h1 { font-size: 2.4rem; color: var(--green); margin: 0 0 8px; letter-spacing: .02em; }
+.landing-lead { font-size: 1.3rem; font-weight: 600; margin: 0; }
+.landing-section { padding: 20px 0; border-bottom: 1px solid var(--line); }
+.landing-section h2 { color: var(--green); }
+.landing-section p { margin: 0; }
+.landing-steps { margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.landing-steps li { counter-increment: step; display: flex; gap: 14px; align-items: flex-start; padding: 10px 0; }
+.landing-steps li::before { content: counter(step); flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+.landing-steps strong { padding-top: 6px; }
+.landing-stage p { display: inline-block; background: var(--warn-bg); border-left: 6px solid var(--ochre); padding: 10px 14px; border-radius: var(--radius); font-weight: 700; }
+.landing-footer { padding: 24px 0 40px; font-size: .95rem; }
+.landing-footer a { display: inline-flex; align-items: center; min-height: var(--tap); }
+@media (min-width: 700px) { .landing-hero h1 { font-size: 3rem; } }

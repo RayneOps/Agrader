@@ -48,6 +48,7 @@ Leave `DJANGO_DEBUG` unset; it defaults to `false`. Never set it to `true` in pr
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `PRODUCT_NAME` | `AGRADER` | The name shown in the UI. |
+| `PUBLIC_CONTACT` | empty | The email or phone shown on the public landing page. The Contact section is hidden while this is empty. |
 | `ALLOW_UNAPPROVED_RULES` | `false` | Use crop rules the Crop Scientist has not approved yet. Recommendations then show a draft banner. |
 | `DB_POOLED` | `false` | Set to `true` if `DATABASE_URL` goes through a transaction-mode pooler, such as PgBouncer, a Neon `-pooler` host, or Supabase on port 6543. |
 | `DB_CONN_MAX_AGE` | `0` | Seconds to keep a database connection open. Keep it at `0` on serverless. |

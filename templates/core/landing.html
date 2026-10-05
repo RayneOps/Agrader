@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Soil-based crop planning{% endblock %}
+{% block head %}<meta name="description" content="{{ PRODUCT_NAME }}: soil-based crop planning for smallholder farmers in Niger State. Prototype.">{% endblock %}
+{% block content %}
+<div class="landing">
+  <header class="landing-hero">
+    <h1>{{ PRODUCT_NAME }}</h1>
+    <p class="landing-lead">Soil-based crop planning for smallholder farmers in Niger State.</p>
+  </header>
+
+  <section class="landing-section">
+    <h2>The problem</h2>
+    <p>Farmers choose which crops to plant without knowing the condition of their soil. They also cannot see how past seasons have changed it. So each season's choice is made without the facts that matter most.</p>
+  </section>
+
+  <section class="landing-section">
+    <h2>How it works</h2>
+    <ol class="landing-steps">
+      <li><strong>We test the soil on the farm.</strong></li>
+      <li><strong>We record the farm's history and the crops the farmer wants to grow.</strong></li>
+      <li><strong>We rank those crops and explain why.</strong></li>
+    </ol>
+  </section>
+
+  <section class="landing-section">
+    <h2>Seasonal Soil Memory</h2>
+    <p>Each farm keeps a season-by-season record of its soil and what was planted. A returning farmer never starts from zero, so the advice improves on every visit.</p>
+  </section>
+
+  <section class="landing-section landing-stage">
+    <h2>Stage</h2>
+    <p>Prototype. Not yet in use with farmers.</p>
+  </section>
+
+  {% if PUBLIC_CONTACT %}
+  <section class="landing-section">
+    <h2>Contact</h2>
+    <p>{% if "@" in PUBLIC_CONTACT %}<a href="mailto:{{ PUBLIC_CONTACT }}">{{ PUBLIC_CONTACT }}</a>{% else %}<a href="tel:{{ PUBLIC_CONTACT|cut:' ' }}">{{ PUBLIC_CONTACT }}</a>{% endif %}</p>
+  </section>
+  {% endif %}
+
+  <footer class="landing-footer">
+    <a href="{% url 'login' %}">Team sign in</a>
+  </footer>
+</div>
+{% endblock %}
