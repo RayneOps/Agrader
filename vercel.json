@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "agrader/wsgi.py": {
+      "maxDuration": 60,
+      "excludeFiles": "{**/tests/**,docs/**,.venv/**,staticfiles/**,db.sqlite3}"
+    }
+  }
+}
