@@ -7,6 +7,7 @@ See `.env.example` and the README.
 """
 import os
 import sys
+import warnings
 from pathlib import Path
 
 import dj_database_url
@@ -77,6 +78,7 @@ INSTALLED_APPS = [
     "farms",
     "crops",
     "readings",
+    "recommendations",
 ]
 
 MIDDLEWARE = [
@@ -161,6 +163,8 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 WHITENOISE_USE_FINDERS = True
+# STATIC_ROOT only exists after collectstatic (the Vercel build); locally the finders serve files.
+warnings.filterwarnings("ignore", message="No directory at: .*staticfiles")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

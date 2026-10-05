@@ -138,6 +138,30 @@ Product decisions that the original build brief did not settle. Newest answers w
 - With no history at all, rotation fit is 60%, and the LLM is told that history is missing.
   Previous crops typed in by the operator count as history.
 
+### Engine details settled in phase 5
+- **Unapproved pair and rotation rules are ignored completely,** including "avoid" pairs and
+  "block" rotation rules. Until R5 and the avoid pairs are approved, nothing stops those
+  crops. The ranking screen says how many rules were skipped.
+- **No N, P or K measured at all:** nutrient fit is left out for every crop, and the other four
+  weights are scaled up to 100. This applies the "drop and rescale" rule for a single missing
+  nutrient one level up. *Needs confirmation.*
+- **Weights that don't add up to 100** are scaled so that they do. The Score settings screen
+  already warns about this.
+- **All removal reasons are kept.** A crop that fails several hard rules lists every reason.
+- **The third-season rule (R8)** applies when the same crop was grown in each of the last two
+  seasons. If its effect is changed to "block", it removes the crop like any other block rule.
+- **History.** A "does not know" answer is not history. Fallow and free-text crops are history
+  (so the LLM is not told history is missing), but the rules ignore them.
+- **Season fit is still scored for crops excused from the season-length rule** (yam, or an
+  irrigated or fadama farm). It can score 0.
+- **Water fit:** if planting falls before the season starts, the available rain is capped at
+  the full season's rainfall.
+- **Combinations.** A combination's breakdown is the average of each component across its
+  crops, plus the good-pair bonus. The ranking screen also shows each crop's own breakdown.
+- **Tie-break order:** higher score first, then fewer crops, then name.
+- **Nothing is saved in phase 5.** The ranking is worked out each time the page opens, and
+  phase 6 adds the Recommendation record.
+
 ### LLM and outcomes (phase 6)
 - **Rules with no reason text.** When a pair or rotation rule has no reason, the LLM may only
   say it is "listed as a good pairing" or "listed as a pairing to avoid". It must not supply a

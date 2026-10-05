@@ -255,3 +255,22 @@ fieldset.choices > div, fieldset.choices > div > div { display: contents; }
 .plain { list-style: none; padding: 0; margin: 0; }
 .plain li { padding: 4px 0; }
 button[disabled] { opacity: .5; cursor: not-allowed; }
+
+/* --- Ranking --- */
+.banner-draft { background: var(--ochre); color: var(--text); font-weight: 800; text-align: center; padding: 12px; border-radius: var(--radius); margin-bottom: 16px; border: 3px dashed var(--text); }
+.options { list-style: none; padding: 0; margin: 0 0 16px; }
+.option-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.rank { flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; }
+.option-name { flex: 1; font-size: 1.1rem; }
+.score { font-size: 1.5rem; font-weight: 800; color: var(--green); white-space: nowrap; }
+.breakdown { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.breakdown th { text-align: left; font-weight: 600; padding: 4px 8px 4px 0; width: 6.5em; }
+.breakdown td { padding: 4px 0; }
+.bd-points { text-align: right; white-space: nowrap; width: 5.5em; font-variant-numeric: tabular-nums; }
+.bd-bar { padding-right: 8px !important; }
+.bar { display: block; height: 12px; background: #ECE8DC; border-radius: 6px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--green); }
+.bd-detail td { font-size: .85rem; color: var(--muted); padding: 0 0 6px; }
+.per-crop { margin-top: 8px; }
+.per-crop summary { cursor: pointer; font-weight: 700; color: var(--green); min-height: var(--tap); display: flex; align-items: center; }
+.per-crop h3 { margin: 8px 0 4px; }

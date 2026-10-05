@@ -5,4 +5,5 @@ urlpatterns = [
     path("", include("core.urls")),
     path("", include("farms.urls")),
     path("", include("crops.urls")),
+    path("", include("recommendations.urls")),
 ]

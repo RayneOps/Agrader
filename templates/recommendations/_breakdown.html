@@ -1,0 +1,21 @@
+{# Score breakdown for one option: components, then the good-pair bonus for combinations. #}
+<table class="breakdown">
+  <caption class="visually-hidden">Score breakdown</caption>
+  <tbody>
+    {% for c in components %}
+    <tr>
+      <th scope="row">{{ c.label }}</th>
+      <td class="bd-bar"><span class="bar"><span class="bar-fill bar-{{ c.key }}" style="width: {% widthratio c.points c.max_points 100 %}%"></span></span></td>
+      <td class="bd-points">{{ c.points|floatformat:1 }} <span class="muted">/ {{ c.max_points|floatformat:0 }}</span></td>
+    </tr>
+    {% if show_detail %}<tr class="bd-detail"><td colspan="3">{{ c.detail }}</td></tr>{% endif %}
+    {% endfor %}
+    {% if option.pair_bonus %}
+    <tr>
+      <th scope="row">Good pairs</th>
+      <td class="bd-bar small">{{ option.good_pairs|join:", " }}</td>
+      <td class="bd-points">+{{ option.pair_bonus|floatformat:0 }}</td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>

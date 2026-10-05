@@ -194,7 +194,7 @@ Product decisions made after the original brief are recorded in [docs/DECISIONS.
 - [x] Phase 2: farmers, farms, seasons
 - [x] Phase 3: crop knowledge and `seed_crops`
 - [x] Phase 4: manual soil readings and the new season wizard
-- [ ] Phase 5: hard rules, fit score, mixed cropping
+- [x] Phase 5: hard rules, fit score, mixed cropping
 - [ ] Phase 6: LLM adapter, validator, Recommendation screen
 - [ ] Phase 7: device API and Devices screen
 - [ ] Phase 8: trend charts, Overview, Activity, Admins

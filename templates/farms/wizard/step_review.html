@@ -20,6 +20,6 @@
   {% if reading.missing_nutrients %}<p class="muted small">Not measured: {{ reading.missing_nutrients|join:", " }}. Nutrient fit will use only what was measured.</p>{% endif %}
 </section>
 
-<button type="button" class="btn btn-primary btn-block" disabled>Request recommendation</button>
-<p class="muted small">Recommendations arrive in the next build phase. This season stays saved as a draft.</p>
+<a class="btn btn-primary btn-block" href="{% url 'season_ranking' season.pk %}">Request recommendation</a>
+<p class="muted small">For now this shows the ranking worked out by code. The written explanation comes in the next build phase, and the season stays a draft.</p>
 {% endblock %}

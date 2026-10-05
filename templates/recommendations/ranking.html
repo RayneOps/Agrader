@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Ranking · {{ farm.name }}{% endblock %}
+{% block content %}
+<p class="crumbs"><a href="{{ farm.farmer.get_absolute_url }}">{{ farm.farmer.name }}</a> › <a href="{{ farm.get_absolute_url }}">{{ farm.name }}</a></p>
+<div class="page-head">
+  <h1>Ranking: {{ season.get_label_display }} {{ season.year }}</h1>
+  {% if season.status == "draft" %}<a class="btn" href="{% url 'season_step' season.pk 4 %}">Back to review</a>{% endif %}
+</div>
+
+{% if error %}
+  <div class="msg msg-error" role="alert">{{ error }}</div>
+{% else %}
+
+{% if inp.used_unapproved %}
+<div class="banner-draft" role="alert">Draft rules, not approved by Crop Scientist</div>
+{% endif %}
+
+<p class="muted small">
+  {{ farm.get_water_source_display }} farm · {{ season.get_cropping_method_display }} · planting {{ season.planting_date|date:"j M Y" }},
+  season ends {{ inp.season_end|date:"j M Y" }} · soil pH {{ inp.reading.ph }}.
+  This ranking is worked out by code only. The written explanation comes in the next phase.
+</p>
+
+{% for notice in result.notices %}<div class="msg msg-warning">{{ notice }}</div>{% endfor %}
+
+{% if result.options %}
+<h2>Top {{ result.options|length }} of {{ result.total_options }} option{{ result.total_options|pluralize }}</h2>
+<ol class="options">
+  {% for option in result.options %}
+  <li class="card option">
+    <div class="option-head">
+      <span class="rank">{{ forloop.counter }}</span>
+      <strong class="option-name">{{ option.crops|join:" + " }}</strong>
+      <span class="score" aria-label="Score {{ option.score }} out of 100">{{ option.score|floatformat:1 }}<span class="muted small">/100</span></span>
+    </div>
+    {% include "recommendations/_breakdown.html" with components=option.components show_detail=option.is_single %}
+    {% if not option.is_single %}
+    <details class="per-crop">
+      <summary>Score of each crop</summary>
+      {% for cs in option.crop_scores %}
+        <h3>{{ cs.crop.name }}: {{ cs.total|floatformat:1 }}</h3>
+        {% include "recommendations/_breakdown.html" with components=cs.components option=None show_detail=True %}
+      {% endfor %}
+    </details>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ol>
+{% endif %}
+
+{% if result.removed %}
+<h2>Removed from the shortlist</h2>
+<ul class="row-list">
+  {% for r in result.removed %}
+  <li class="rule-row"><div><strong>{{ r.crop }}</strong><div class="small">{{ r.reason }}</div></div></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<details class="card">
+  <summary>How the score works</summary>
+  <p class="small">Each crop that passes the rules gets up to 100 points:
+    {% for key, label in component_labels %}{{ label }}{% if not forloop.last %}, {% endif %}{% endfor %},
+    weighted by the Score settings. For mixed cropping, a combination scores the average of its crops,
+    plus {{ good_pair_bonus }} for each pair listed as good, up to 100. Only the top {{ top_options }} options are shown.</p>
+</details>
+{% endif %}
+{% endblock %}
