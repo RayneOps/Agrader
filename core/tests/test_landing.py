@@ -33,8 +33,8 @@ class LandingPageTests(TestCase):
 
     def test_team_section(self):
         response = self.client.get("/")
-        for name, role in (("Ishak Ishak Opeyemi", "Founder"), ("Abubakar Usman Damilare", "Developer"),
-                           ("Samantha Umar", "Crop Scientist"), ("Apeh Peter", "AI")):
+        for name, role in (("Ishaq Ishaq Opeyemi", "Founder"), ("Abubakar Usman Damilare", "Developer"),
+                           ("Samantha Umar", "Crop Scientist"), ("Apeh Peter", "AI Engineer")):
             self.assertContains(response, f"<li><strong>{name}</strong><span>{role}</span></li>", html=True)
 
     @override_settings(PRODUCT_NAME="CropCycle")
