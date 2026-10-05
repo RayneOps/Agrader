@@ -18,13 +18,53 @@ Product decisions that the original build brief did not settle. Newest answers w
   source and size at the time it was made. Farms are editable, and old recommendations must stay
   reproducible.
 
+## New season wizard (phase 4)
+
+- **Step 1 records the season itself.** It asks for the season (rainy or dry) and the planned
+  planting date as well as the history, because the draft Season is saved at the end of
+  step 1. `year` is the planting date's year. `cropping_method` stays blank on the draft until
+  step 2.
+- **Progress comes from the saved data,** not a stored step number. Step 2 is done once the
+  method and shortlist are saved, and step 3 once the season has a reading. "Start new season"
+  on a farm with a draft opens the first unfinished step. Going back to an earlier step
+  updates the existing rows instead of adding new ones.
+- **Returning farm** means the farm has any earlier season.
+  - Step 1 always asks "What was actually planted last season?" and never prefills it. It must
+    be answered: crops, other text, fallow, or "the farmer does not know".
+  - The farmer's shortlist from that season is shown as a reminder only.
+  - Two and three seasons ago are prefilled from what was recorded on the last season, and
+    the operator can correct them.
+- **First-time farm:** up to three past seasons, all optional.
+- **Fallow and "does not know"** are stored as PreviousCrop rows with free text and no crop
+  link. The rules ignore them, and the LLM receives them as context.
+- **Soil readings.**
+  - Values are stored as floats, exactly as entered or received.
+  - pH is required. N, P, K, moisture, temperature and EC are optional.
+  - Values outside these ranges get a warning and a "Save anyway" button, never a refusal:
+
+    | Value | Plausible range |
+    | --- | --- |
+    | pH | 3 to 10 |
+    | N and P | 0 to 1000 mg/kg |
+    | K | 0 to 2000 mg/kg |
+    | Moisture | 0 to 100 % |
+    | Temperature | 5 to 60 °C |
+    | EC | 0 to 10000 µS/cm |
+
+  - The EC unit is assumed to be µS/cm, because the sensor's units are unconfirmed.
+  - A reading time more than 5 minutes in the future is rejected. That is a date check, not a
+    value check.
+  - Typing in a new reading adds another one, and the season's newest reading is used.
+- **Sensor pickup:** step 3 offers the farm's newest sensor reading from the last 24 hours
+  that is either unattached or already attached to this season.
+
 ## Crop knowledge and approval
 
 - **Who approves.** A user may approve only if `can_approve_rules` is set. `seed_admins` sets the
   flag on the admin named by `RULE_APPROVER_EMAIL` and clears it on everyone else. If the variable
   is unset, nobody can approve, and the Crop knowledge screen says so.
-- **No self-approval.** Nobody can approve a version they edited themselves, the approver
-  included. Seed data has no editor, so the approver can approve it.
+- **Approving own edits.** The rule approver may approve their own edits, as a separate click.
+  Saving an edit never approves it. Everyone else cannot approve anything.
 - **Score settings** follow the same rule, with "verify" in place of "approve".
 - **Requirement versions are immutable.** Every edit creates the next version. Older versions,
   approved or not, stay as they were.
@@ -33,9 +73,10 @@ Product decisions that the original build brief did not settle. Newest answers w
 - **Pair rules, rotation rules and score settings are edited in place.** An edit clears approval,
   and the audit log keeps the history. Recommendations will snapshot the rule text they used
   (phase 6).
-- **Display fields only.** The Crop knowledge screen edits a crop's name, local names,
-  scientific name and active flag. Family and nitrogen fixing feed the scoring, so they are not
-  editable on screen.
+- **Adding crops.** "Add crop" sets the family and nitrogen fixing, which are locked after that.
+  Editing a crop later only changes its name, local names, scientific name and active flag. A
+  new crop has no requirements, so it cannot be recommended until a requirements version is
+  added and approved.
 - **Seed data.**
   - `seed_crops` only adds records that are missing. It never changes an existing record, so
     edits and approvals survive a re-run.
@@ -96,3 +137,10 @@ Product decisions that the original build brief did not settle. Newest answers w
 - R8 is a special case in code. R6 is stored as two rules, one for each direction.
 - With no history at all, rotation fit is 60%, and the LLM is told that history is missing.
   Previous crops typed in by the operator count as history.
+
+### LLM and outcomes (phase 6)
+- **Rules with no reason text.** When a pair or rotation rule has no reason, the LLM may only
+  say it is "listed as a good pairing" or "listed as a pairing to avoid". It must not supply a
+  reason of its own.
+- **Outcome from the next season.** The step 1 answer "What was actually planted last season?"
+  also fills the Outcome of the previous season's recommendation.

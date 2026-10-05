@@ -1,0 +1,9 @@
+{% extends "farms/wizard/_base.html" %}
+{% block step %}
+<form method="post" class="card" novalidate>
+  {% csrf_token %}
+  {% include "core/_form_fields.html" %}
+  <p class="muted small">Only active crops are listed. Mono cropping needs at least 1 crop, mixed cropping at least 2.</p>
+  <button type="submit" class="btn btn-primary btn-block">Save and continue</button>
+</form>
+{% endblock %}

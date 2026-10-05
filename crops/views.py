@@ -10,7 +10,7 @@ from django.views.decorators.http import require_POST
 
 from accounts.models import User
 
-from .forms import CropForm, CropRequirementForm, PairRuleForm, RotationRuleForm, ScoreSettingForm
+from .forms import CropForm, CropRequirementForm, NewCropForm, PairRuleForm, RotationRuleForm, ScoreSettingForm
 from .models import Crop, CropPairRule, CropRequirement, RotationRule, ScoreSetting
 
 
@@ -89,6 +89,18 @@ def crop_detail(request, pk):
         "latest": versions[0] if versions else None,
         "in_use": next((v for v in versions if v.approved or settings.ALLOW_UNAPPROVED_RULES), None),
     })
+
+
+def crop_new(request):
+    form = NewCropForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        crop = form.save()
+        messages.success(
+            request,
+            f"{crop.name} added. It cannot be recommended until its requirements are added and approved.",
+        )
+        return redirect("requirement_new", pk=crop.pk)
+    return _form_page(request, form, "Add crop", reverse("crop_list"), submit="Add crop")
 
 
 def crop_edit(request, pk):

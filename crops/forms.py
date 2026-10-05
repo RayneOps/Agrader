@@ -3,8 +3,26 @@ from django import forms
 from .models import Crop, CropPairRule, CropRequirement, RotationRule, ScoreSetting
 
 
+class NewCropForm(forms.ModelForm):
+    """Family and nitrogen fixing feed the scoring. They are set here once and locked afterwards."""
+
+    class Meta:
+        model = Crop
+        fields = ["name", "also_called", "scientific_name", "family", "fixes_nitrogen", "active"]
+        help_texts = {
+            "family": "Cannot be changed after the crop is created. Rotation rules use it.",
+            "fixes_nitrogen": "Cannot be changed after the crop is created. Nitrogen-fixing crops get full marks for nitrogen.",
+        }
+
+    def clean_name(self):
+        name = " ".join(self.cleaned_data["name"].split())
+        if Crop.objects.filter(name__iexact=name).exists():
+            raise forms.ValidationError("A crop with this name already exists.")
+        return name
+
+
 class CropForm(forms.ModelForm):
-    """Display details only. Family and nitrogen fixing feed the scoring, so they are not editable here."""
+    """Display details only. Family and nitrogen fixing are locked after creation."""
 
     class Meta:
         model = Crop

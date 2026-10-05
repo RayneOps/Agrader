@@ -101,8 +101,11 @@ class SeedCropsTests(TestCase):
 
 
 class ModelRuleTests(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         seed()
+
+    def setUp(self):
         self.maize = Crop.objects.get(name="Maize")
 
     def test_requirement_versions_are_immutable_and_numbered(self):
@@ -141,8 +144,11 @@ class ModelRuleTests(TestCase):
 
 
 class ApprovalTests(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         seed()
+
+    def setUp(self):
         self.approver = make_user("samantha@agrader.hq", approver=True)
         self.editor = make_user("ishaq@agrader.hq")
 
@@ -155,13 +161,21 @@ class ApprovalTests(TestCase):
         self.assertEqual((pair.approved, pair.approved_by), (True, self.approver))
         self.assertIsNotNone(pair.approved_at)
 
-    def test_nobody_approves_their_own_edit(self):
+    def test_approver_may_approve_own_edit_as_a_separate_step(self):
         rule = RotationRule.objects.get(code="R3")
         rule.mark_edited(self.approver)
         rule.save()
-        self.assertIn("You edited this", rule.approval_block_reason(self.approver))
+        self.assertFalse(rule.approved, "editing never approves")
+        rule.approve(self.approver)
+        rule.refresh_from_db()
+        self.assertEqual((rule.approved, rule.approved_by), (True, self.approver))
+
+    def test_editor_without_flag_cannot_approve_own_edit(self):
+        rule = RotationRule.objects.get(code="R3")
+        rule.mark_edited(self.editor)
+        rule.save()
         with self.assertRaises(PermissionError):
-            rule.approve(self.approver)
+            rule.approve(self.editor)
 
     def test_editing_resets_approval(self):
         self.client.force_login(self.editor)
@@ -194,7 +208,7 @@ class ApprovalTests(TestCase):
 
         self.client.post(reverse("requirement_approve", args=[v2.pk]))
         v2.refresh_from_db()
-        self.assertFalse(v2.approved, "approver edited v2, so cannot approve it")
+        self.assertTrue(v2.approved, "the approver may approve their own version with a separate click")
 
         self.client.force_login(self.editor)
         self.client.post(reverse("requirement_approve", args=[v1.pk]))
@@ -205,7 +219,7 @@ class ApprovalTests(TestCase):
         self.client.post(reverse("requirement_approve", args=[v1.pk]))
         v1.refresh_from_db()
         self.assertTrue(v1.approved)
-        self.assertEqual(maize.latest_approved_requirement(), v1)
+        self.assertEqual(maize.latest_approved_requirement(), v2)
 
     def test_approve_requires_post(self):
         self.client.force_login(self.approver)
@@ -237,8 +251,11 @@ class ApprovalTests(TestCase):
 
 
 class CropKnowledgeScreenTests(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         seed()
+
+    def setUp(self):
         self.admin = make_user("usman@agrader.hq")
         self.client.force_login(self.admin)
 
@@ -277,3 +294,35 @@ class CropKnowledgeScreenTests(TestCase):
     def test_engine_version_shown_with_unapproved_allowed(self):
         crop = Crop.objects.get(name="Maize")
         self.assertContains(self.client.get(reverse("crop_detail", args=[crop.pk])), "v1 (draft)")
+
+
+class AddCropTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        seed()
+
+    def setUp(self):
+        self.client.force_login(make_user("usman@agrader.hq"))
+
+    def test_add_crop_sets_family_once_and_has_no_approved_requirement(self):
+        response = self.client.post(reverse("crop_new"), {
+            "name": "Sesame", "also_called": "Ridi", "scientific_name": "Sesamum indicum",
+            "family": "cereal", "fixes_nitrogen": "", "active": "on",
+        })
+        crop = Crop.objects.get(name="Sesame")
+        self.assertRedirects(response, reverse("requirement_new", args=[crop.pk]))
+        self.assertIsNone(crop.latest_approved_requirement())
+        self.assertContains(self.client.get(reverse("crop_detail", args=[crop.pk])), "cannot be recommended")
+
+        # The edit form ignores family and fixes_nitrogen.
+        self.client.post(reverse("crop_edit", args=[crop.pk]), {
+            "name": "Sesame", "also_called": "Ridi", "scientific_name": "Sesamum indicum",
+            "family": "legume", "fixes_nitrogen": "on", "active": "on",
+        })
+        crop.refresh_from_db()
+        self.assertEqual((crop.family, crop.fixes_nitrogen), ("cereal", False))
+
+    def test_duplicate_crop_name_rejected(self):
+        response = self.client.post(reverse("crop_new"), {"name": "maize", "family": "cereal", "active": "on"})
+        self.assertContains(response, "already exists")
+        self.assertEqual(Crop.objects.count(), 12)

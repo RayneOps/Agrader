@@ -1,0 +1,28 @@
+{% extends "farms/wizard/_base.html" %}
+{% block step %}
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="msg msg-error" role="alert">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+  <section class="card">
+    <h2>Which season?</h2>
+    {% include "core/_field.html" with field=form.label %}
+    {% include "core/_field.html" with field=form.planting_date %}
+  </section>
+
+  {% if returning %}
+  <p class="muted">Ask the farmer what they actually planted. Do not assume they followed the last recommendation.
+    {% if last_shortlist %}Last season's shortlist was: {{ last_shortlist|join:", " }}.{% endif %}</p>
+  {% else %}
+  <p class="muted">This is the first season on record for this farm. Enter what the farmer remembers, up to three seasons back. Leave a season empty if nobody knows.</p>
+  {% endif %}
+
+  {% for heading, fields in form.slot_fields %}
+  <section class="card">
+    <h2>{{ heading }}</h2>
+    {% for field in fields %}{% include "core/_field.html" %}{% endfor %}
+  </section>
+  {% endfor %}
+
+  <button type="submit" class="btn btn-primary btn-block">Save and continue</button>
+</form>
+{% endblock %}

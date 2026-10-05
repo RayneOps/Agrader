@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path("crops", views.crop_list, name="crop_list"),
+    path("crops/new", views.crop_new, name="crop_new"),
     path("crops/<uuid:pk>", views.crop_detail, name="crop_detail"),
     path("crops/<uuid:pk>/edit", views.crop_edit, name="crop_edit"),
     path("crops/<uuid:pk>/requirements/new", views.requirement_new, name="requirement_new"),

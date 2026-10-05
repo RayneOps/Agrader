@@ -3,6 +3,11 @@
 {% block content %}
 {% include "crops/_header.html" %}
 
+<div class="page-head">
+  <p class="muted small">The engine uses each crop's newest approved requirements version.</p>
+  <a class="btn btn-primary" href="{% url 'crop_new' %}">Add crop</a>
+</div>
+
 <ul class="row-list">
   {% for row in rows %}
   <li>

@@ -1,0 +1,9 @@
+<dl class="facts facts-compact">
+  <div><dt>Taken</dt><dd>{{ reading.taken_at|date:"j M Y, H:i" }} · {{ reading.get_source_display }}</dd></div>
+  <div><dt>pH</dt><dd>{{ reading.ph }}</dd></div>
+  <div><dt>N / P / K</dt><dd>{{ reading.nitrogen|default_if_none:"–" }} / {{ reading.phosphorus|default_if_none:"–" }} / {{ reading.potassium|default_if_none:"–" }} mg/kg</dd></div>
+  <div><dt>Moisture</dt><dd>{% if reading.moisture_pct is not None %}{{ reading.moisture_pct }} %{% else %}–{% endif %}</dd></div>
+  <div><dt>Temperature</dt><dd>{% if reading.temperature_c is not None %}{{ reading.temperature_c }} °C{% else %}–{% endif %}</dd></div>
+  <div><dt>EC</dt><dd>{% if reading.ec is not None %}{{ reading.ec }} µS/cm{% else %}–{% endif %}</dd></div>
+</dl>
+{% for w in reading.warnings %}<div class="msg msg-warning">{{ w }}</div>{% endfor %}

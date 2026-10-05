@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}New season · {{ farm.name }}{% endblock %}
+{% block content %}
+<p class="crumbs"><a href="{{ farm.farmer.get_absolute_url }}">{{ farm.farmer.name }}</a> › <a href="{{ farm.get_absolute_url }}">{{ farm.name }}</a></p>
+<h1>{% if season %}{{ season.get_label_display }} {{ season.year }}{% else %}New season{% endif %}</h1>
+<p class="muted small">{{ farm.get_water_source_display }} farm, {{ farm.size_ha }} ha.{% if season %} Saved as a draft after every step.{% endif %}</p>
+
+<ol class="steps" aria-label="Steps">
+  {% for number, name in steps %}
+  <li{% if number == step %} aria-current="step"{% endif %}{% if number < reachable %} class="done"{% endif %}>
+    {% if season and number <= reachable and number != step %}<a href="{% url 'season_step' season.pk number %}">{{ number }}. {{ name }}</a>{% else %}<span>{{ number }}. {{ name }}</span>{% endif %}
+  </li>
+  {% endfor %}
+</ol>
+
+{% for warning in warnings %}<div class="msg msg-warning" role="alert">{{ warning }}</div>{% endfor %}
+
+{% block step %}{% endblock %}
+{% endblock %}

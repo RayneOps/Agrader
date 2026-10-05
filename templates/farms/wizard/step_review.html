@@ -1,0 +1,25 @@
+{% extends "farms/wizard/_base.html" %}
+{% block step %}
+<section class="card">
+  <div class="page-head"><h2>Season</h2><a href="{% url 'season_step' season.pk 1 %}">Change</a></div>
+  <p>{{ season.get_label_display }}, planting {{ season.planting_date|date:"j M Y" }}</p>
+  <h3>Planted before</h3>
+  {% if previous %}
+  <ul class="plain">{% for seasons_ago, crops in previous %}<li><span class="muted">{% if seasons_ago == 1 %}Last season{% else %}{{ seasons_ago }} seasons ago{% endif %}:</span> {{ crops|join:", " }}</li>{% endfor %}</ul>
+  {% else %}<p class="muted">No history recorded. Rotation will be scored without it.</p>{% endif %}
+</section>
+
+<section class="card">
+  <div class="page-head"><h2>Shortlist</h2><a href="{% url 'season_step' season.pk 2 %}">Change</a></div>
+  <p>{{ season.get_cropping_method_display }}: {{ intended|join:", " }}</p>
+</section>
+
+<section class="card">
+  <div class="page-head"><h2>Soil reading</h2><a href="{% url 'season_step' season.pk 3 %}">Change</a></div>
+  {% include "farms/wizard/_reading.html" %}
+  {% if reading.missing_nutrients %}<p class="muted small">Not measured: {{ reading.missing_nutrients|join:", " }}. Nutrient fit will use only what was measured.</p>{% endif %}
+</section>
+
+<button type="button" class="btn btn-primary btn-block" disabled>Request recommendation</button>
+<p class="muted small">Recommendations arrive in the next build phase. This season stays saved as a draft.</p>
+{% endblock %}

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "audit",
     "farms",
     "crops",
+    "readings",
 ]
 
 MIDDLEWARE = [

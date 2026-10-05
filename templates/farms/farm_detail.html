@@ -23,8 +23,9 @@
 
 <div class="page-head">
   <h2>Seasonal Soil Memory</h2>
-  {# TODO(phase 4): Start new season button linking to the wizard. #}
+  <a class="btn btn-primary" href="{% url 'season_start' farm.pk %}">{% if draft %}Resume open season{% else %}Start new season{% endif %}</a>
 </div>
+{% if unattached_readings %}<p class="muted small">{{ unattached_readings }} sensor reading{{ unattached_readings|pluralize }} not yet attached to a season. Start a season to use {{ unattached_readings|pluralize:"it,them" }}.</p>{% endif %}
 {% if seasons %}
 <ol class="timeline">
   {% for season in seasons %}
@@ -33,7 +34,11 @@
       <strong>{{ season.get_label_display }} {{ season.year }}</strong>
       <span class="tag tag-status-{{ season.status }}">{{ season.get_status_display }}</span>
     </div>
-    <div class="muted">Planted {{ season.planting_date|date:"j M Y" }} · {{ season.get_cropping_method_display }}</div>
+    <div class="muted">Planting {{ season.planting_date|date:"j M Y" }}{% if season.cropping_method %} · {{ season.get_cropping_method_display }}{% endif %}</div>
+    {% if season.previous_crops.all %}<div class="small"><span class="muted">Planted the season before:</span> {{ season.previous_crops.all|join:", " }}</div>{% endif %}
+    {% if season.intended_crops.all %}<div class="small"><span class="muted">Shortlist:</span> {{ season.intended_crops.all|join:", " }}</div>{% endif %}
+    <div class="small muted">{{ season.readings.all|length }} soil reading{{ season.readings.all|length|pluralize }}</div>
+    {% if season.status == "draft" %}<a href="{% url 'season_start' farm.pk %}">Continue this season</a>{% endif %}
   </li>
   {% endfor %}
 </ol>

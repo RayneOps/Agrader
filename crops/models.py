@@ -43,14 +43,15 @@ def parse_month_day(value):
     return int(match[1]), int(match[2])
 
 
-def approval_block_reason(user, *, already_approved, editor_id):
-    """Why `user` may not approve this item, or None if they may."""
+def approval_block_reason(user, *, already_approved):
+    """Why `user` may not approve this item, or None if they may.
+
+    The rule approver may approve their own edits, but always as a separate step from editing.
+    """
     if already_approved:
         return "Already approved."
     if not user.can_approve_rules:
         return "Only the rule approver can approve."
-    if editor_id is not None and editor_id == user.pk:
-        return "You edited this, so you cannot approve it."
     return None
 
 
@@ -70,7 +71,7 @@ class Approvable(CreatedByModel):
         abstract = True
 
     def approval_block_reason(self, user):
-        return approval_block_reason(user, already_approved=self.approved, editor_id=self.edited_by_id)
+        return approval_block_reason(user, already_approved=self.approved)
 
     def approve(self, user):
         reason = self.approval_block_reason(user)
@@ -343,8 +344,14 @@ class ScoreSetting(BaseModel):
             if parse_month_day(self.value) is None:
                 raise ValidationError({"value": "Enter a date as MM-DD, for example 10-15 for 15 October."})
 
+    @classmethod
+    def month_day(cls, key):
+        """The (month, day) stored under `key`, or None if missing or invalid."""
+        setting = cls.objects.filter(key=key, kind=cls.Kind.MONTH_DAY).first()
+        return parse_month_day(setting.value) if setting else None
+
     def approval_block_reason(self, user):
-        return approval_block_reason(user, already_approved=self.verified, editor_id=self.edited_by_id)
+        return approval_block_reason(user, already_approved=self.verified)
 
     def verify(self, user):
         reason = self.approval_block_reason(user)

@@ -1,0 +1,46 @@
+{% extends "farms/wizard/_base.html" %}
+{% block step %}
+{% if current %}
+<section class="card">
+  <h2>Reading saved for this season</h2>
+  {% include "farms/wizard/_reading.html" with reading=current %}
+  <a class="btn btn-primary btn-block" href="{% url 'season_step' season.pk 4 %}">Use this reading and continue</a>
+  <p class="muted small">Or type in a new reading below. The newest reading is used.</p>
+</section>
+{% endif %}
+
+{% if recent and recent.season_id != season.pk %}
+<section class="card">
+  <h2>Sensor reading from the last 24 hours</h2>
+  {% include "farms/wizard/_reading.html" with reading=recent %}
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="use_sensor">
+    <input type="hidden" name="reading" value="{{ recent.pk }}">
+    <button type="submit" class="btn btn-primary btn-block">Use this sensor reading</button>
+  </form>
+</section>
+{% endif %}
+
+<form method="post" class="card" novalidate>
+  {% csrf_token %}
+  <h2>Type in a reading</h2>
+  <input type="hidden" name="action" value="manual">
+  {% if implausible %}
+  <div class="msg msg-warning" role="alert">
+    <p>Some values look unusual. Check them on the sensor before saving:</p>
+    <ul>{% for w in implausible %}<li>{{ w }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  {% include "core/_form_fields.html" %}
+  <p class="muted small">Only pH is required. Leave a value empty if it was not measured.</p>
+  <div class="actions">
+    {% if implausible %}
+      <button type="submit" name="confirm_implausible" value="1" class="btn btn-accent">Save anyway</button>
+      <button type="submit" class="btn">Check again</button>
+    {% else %}
+      <button type="submit" class="btn btn-primary btn-block">Save reading and continue</button>
+    {% endif %}
+  </div>
+</form>
+{% endblock %}

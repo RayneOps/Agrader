@@ -232,3 +232,26 @@ input[type=datetime-local], input[type=search], input[type=tel], select, textare
 .facts-compact { gap: 8px; }
 code { font-family: ui-monospace, Consolas, monospace; font-size: .9em; background: rgba(0,0,0,.06); padding: 1px 4px; border-radius: 4px; }
 h3 { font-size: 1.1rem; margin: 0; }
+
+/* --- Choices, units, wizard --- */
+fieldset.choices { border: 0; padding: 0; margin: 0; }
+fieldset.choices legend { font-weight: 700; margin-bottom: 6px; padding: 0; }
+.check { display: flex; align-items: center; gap: 12px; min-height: var(--tap); padding: 6px 12px; margin: 0 0 6px; font-weight: 600; border: 2px solid var(--line); border-radius: var(--radius); background: #fff; cursor: pointer; }
+.check input { width: 24px; height: 24px; flex: 0 0 auto; accent-color: var(--green); }
+.check:has(input:checked) { border-color: var(--green); background: var(--ok-bg); }
+fieldset.choices > div, fieldset.choices > div > div { display: contents; }
+@media (min-width: 600px) {
+  fieldset.choices { display: grid; grid-template-columns: 1fr 1fr; column-gap: 8px; }
+  fieldset.choices legend { grid-column: 1 / -1; }
+}
+.input-unit { display: flex; align-items: stretch; }
+.input-unit input { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.input-unit span { display: flex; align-items: center; padding: 0 12px; min-width: 72px; justify-content: center; font-weight: 700; background: var(--bg); border: 2px solid #6B6B6B; border-left: 0; border-radius: 0 var(--radius) var(--radius) 0; }
+.steps { list-style: none; padding: 0; margin: 0 0 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.steps li { text-align: center; font-size: .85rem; font-weight: 700; }
+.steps li > * { display: flex; align-items: center; justify-content: center; min-height: var(--tap); padding: 4px; border-radius: var(--radius); background: #fff; border: 2px solid var(--line); color: var(--muted); text-decoration: none; }
+.steps li.done > * { border-color: var(--green); color: var(--green); }
+.steps li[aria-current="step"] > * { background: var(--green); border-color: var(--green); color: #fff; }
+.plain { list-style: none; padding: 0; margin: 0; }
+.plain li { padding: 4px 0; }
+button[disabled] { opacity: .5; cursor: not-allowed; }

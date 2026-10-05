@@ -62,9 +62,9 @@ a new password from the Admins screen (phase 8).
 score settings, all as unapproved drafts. Running it again only adds what is missing and never
 changes existing records.
 
-Only the admin named by `RULE_APPROVER_EMAIL` can approve rules, and never a version they
-edited themselves. Editing a requirement creates a new version. Editing any other rule or
-setting clears its approval.
+Only the admin named by `RULE_APPROVER_EMAIL` can approve rules. They may approve their own
+edits, but always as a separate click. Editing a requirement creates a new version. Editing any
+other rule or setting clears its approval.
 
 ## Audit log
 
@@ -93,7 +93,7 @@ Product decisions made after the original brief are recorded in [docs/DECISIONS.
 - [x] Phase 1: settings, custom user, login, `seed_admins`, audit log, base template and styles
 - [x] Phase 2: farmers, farms, seasons
 - [x] Phase 3: crop knowledge and `seed_crops`
-- [ ] Phase 4: manual soil readings and the new season wizard
+- [x] Phase 4: manual soil readings and the new season wizard
 - [ ] Phase 5: hard rules, fit score, mixed cropping
 - [ ] Phase 6: LLM adapter, validator, Recommendation screen
 - [ ] Phase 7: device API and Devices screen
