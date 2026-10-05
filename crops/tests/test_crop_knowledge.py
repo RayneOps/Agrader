@@ -250,6 +250,7 @@ class ApprovalTests(TestCase):
         self.assertEqual(CropPairRule.objects.count(), 38)
 
 
+@override_settings(ALLOW_UNAPPROVED_RULES=False)
 class CropKnowledgeScreenTests(TestCase):
     @classmethod
     def setUpTestData(cls):

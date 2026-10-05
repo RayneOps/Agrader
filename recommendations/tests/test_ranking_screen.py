@@ -40,6 +40,7 @@ class RankingTestCase(TestCase):
         return reverse("season_ranking", args=[self.season.pk])
 
 
+@override_settings(ALLOW_UNAPPROVED_RULES=False)
 class GatherTests(RankingTestCase):
     def test_unapproved_rules_are_not_used(self):
         inp = gather(self.season)
@@ -118,6 +119,7 @@ class RankingScreenTests(RankingTestCase):
         self.assertContains(self.client.get(reverse("season_step", args=[self.season.pk, 4])), self.url())
 
 
+@override_settings(ALLOW_UNAPPROVED_RULES=False)
 class NoApprovedRulesScreenTests(RankingTestCase):
     def test_explains_why_nothing_is_ranked(self):
         response = self.client.get(self.url())

@@ -4,6 +4,7 @@ from django.urls import reverse
 from accounts.models import User
 
 
+@override_settings(PUBLIC_CONTACT="", PRODUCT_NAME="AGRADER")
 class LandingPageTests(TestCase):
     def test_anonymous_visitors_see_the_landing_page_without_database_queries(self):
         with self.assertNumQueries(0):
